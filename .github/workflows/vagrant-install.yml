@@ -21,5 +21,11 @@ jobs:
           sudo apt-get install -y vagrant ruby-fog-libvirt
           vagrant plugin install vagrant-libvirt
 
+      - name: Enable libvirt group perms
+        run: |
+          echo 'KERNEL=="libvirt", GROUP="libvirt", MODE="0666", OPTIONS+="static_node=libvirt"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
       - name: Run Vagrant
         run: vagrant up --provider=libvirt
